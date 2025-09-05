@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure--gfhi%t8p&0y_zehi_ig6py9%6jk81$gz76z+14%y4ogxt(2xb
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://flip-cart-project-1.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://automation-project-chst.onrender.com']
 
 
 # Application definition
@@ -153,13 +153,17 @@ MESSAGE_TAGS = {
 
 
 # Celery
-CELERY_BROKER_URL = os.getenv("REDIS_URL")  # Redis broker
-CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")  # Task result save 
+# CELERY_BROKER_URL = os.getenv("REDIS_URL")  # Redis broker
+# CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")  # Task result save 
 
-CELERY_TIMEZONE = 'Asia/Dhaka'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_URL = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
+CELERY_RESULT_BACKEND = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
+
+
+# CELERY_TIMEZONE = 'Asia/Dhaka'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
 
 
 CKEDITOR_CONFIGS = {
@@ -192,4 +196,4 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF_TRUSTED_ORIGINS = ['https://faff-114-79-178-247.ngrok-free.app']
-BASE_URL = 'http://127.0.0.1:8000/'  # deploy server change this url
+BASE_URL = 'https://automation-project-chst.onrender.com'  # deploy server change this url

@@ -20,21 +20,6 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-
-            # HTML Template render
-            subject = "Verify Your Email Address"
-            from_email = settings.EMAIL_HOST_USER
-            user_email = form.cleaned_data['email']
-            to_email = [user_email]
-
-            text_content = render_to_string("accounts/otp_email.txt", context)  # fallback text
-            html_content = render_to_string("accounts/otp_email.html", context)  # beautiful design
-
-            # Email send
-            msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
-
             messages.success(request, "Account created successfully! An OTP was sent to your Email")
             return redirect("account:verify-email",  username=user.username)
         else:
@@ -127,7 +112,7 @@ def resend_otp(request):
             context = {
                 "username": user.username,
                 "otp": otp_codes,
-                "verify_url": f"http://127.0.0.1:8000/account/verify-email/{user.username}/{uidb64}",
+                "verify_url": f"https://automation-project-chst.onrender.com/account/verify-email/{user.username}/{uidb64}",
             }
             
             

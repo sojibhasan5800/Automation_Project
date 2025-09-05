@@ -14,7 +14,7 @@ from django.utils.encoding import force_bytes
 def create_token(sender, instance, created, **kwargs):
     if created:
         if instance.is_superuser:
-            pass
+            return
         
         else:
             
@@ -31,7 +31,7 @@ def create_token(sender, instance, created, **kwargs):
         context = {
             "username": instance.username,
             "otp": otp_codes,
-            "verify_url": f"http://127.0.0.1:8000/account/verify-email/{instance.username}/{uidb64}",
+            "verify_url": f"https://automation-project-chst.onrender.com/account/verify-email/{instance.username}/{uidb64}",
         }
        
         
