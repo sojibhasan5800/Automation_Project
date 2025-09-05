@@ -28,7 +28,13 @@ SECRET_KEY = 'django-insecure--gfhi%t8p&0y_zehi_ig6py9%6jk81$gz76z+14%y4ogxt(2xb
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://automation-project-chst.onrender.com']
+CSRF_TRUSTED_ORIGINS = [
+    "https://automation-project-chst.onrender.com",
+    "http://automation-project-chst.onrender.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
+
 
 
 # Application definition
