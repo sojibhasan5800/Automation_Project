@@ -203,4 +203,9 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF_TRUSTED_ORIGINS = ['https://faff-114-79-178-247.ngrok-free.app']
-BASE_URL = 'https://automation-project-chst.onrender.com'  # deploy server change this url
+
+local_host= True
+if local_host:
+    BASE_URL = "http://127.0.0.1:8000"
+else:
+    BASE_URL = 'https://automation-project-chst.onrender.com'  # deploy server Base url
