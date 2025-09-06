@@ -204,7 +204,7 @@ AUTH_USER_MODEL = 'account.CustomUser'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF_TRUSTED_ORIGINS = ['https://faff-114-79-178-247.ngrok-free.app']
 
-local_host= True
+local_host= False
 if local_host:
     BASE_URL = "http://127.0.0.1:8000"
 else:
