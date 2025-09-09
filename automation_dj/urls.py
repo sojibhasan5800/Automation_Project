@@ -22,7 +22,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("admin/", admin.site.urls),
     path('', views.home, name='home'),
     path('dataentry/', include('dataentry.urls')),
     path('celery-test/', views.celery_test),
@@ -30,4 +29,5 @@ urlpatterns = [
     path('account/', include(('account.urls', 'account'), namespace='account')),
     path('image-compression/', include('image_compression.urls')),
     path('webscraping/', include('stockanalysis.urls')),
+    path("__reload__/", include("django_browser_reload.urls")),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

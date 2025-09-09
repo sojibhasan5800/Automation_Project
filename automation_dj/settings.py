@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'ckeditor',
+    "django_browser_reload",
 ]
 # Configure crispy template pack
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_browser_reload.middleware.BrowserReloadMiddleware", 
 ]
 
 ROOT_URLCONF = 'automation_dj.urls'
@@ -204,7 +206,7 @@ AUTH_USER_MODEL = 'account.CustomUser'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF_TRUSTED_ORIGINS = ['https://faff-114-79-178-247.ngrok-free.app']
 
-local_host= False
+local_host= True
 if local_host:
     BASE_URL = "http://127.0.0.1:8000"
 else:
