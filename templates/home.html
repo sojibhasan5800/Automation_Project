@@ -107,6 +107,9 @@
             &nbsp;<a href="{% url 'account:register' %}" class="btn btn-success">REGISTER</a>
         </div>
     </div>
+    <div>
+        {% include "accounts/social_logins.html" %}
+    </div>
 
     {% endif %}
 
