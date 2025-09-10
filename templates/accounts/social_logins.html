@@ -1,17 +1,19 @@
+{% load socialaccount %}
 <div class="social-login-container">
+
     <!-- Divider with OR -->
     <div class="divider"><span>OR</span></div>
 
     <!-- Social Buttons -->
     <div class="social-buttons">
         <!-- GitHub -->
-        <a href="#" class="btn github-btn">
+        <a href="{% provider_login_url 'github'%}" class="btn github-btn">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" class="icon">
             Sign in with GitHub
         </a>
 
         <!-- Facebook -->
-        <a href="#" class="btn facebook-btn">
+        <a href="{% provider_login_url 'facebook'%}"class="btn facebook-btn">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg" alt="Facebook" class="icon">
             Sign in with Facebook
         </a>

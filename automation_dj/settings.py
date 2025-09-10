@@ -48,6 +48,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Required for allauth
+    # Allauth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',   # GitHub provider
+    'allauth.socialaccount.providers.facebook', # Facebook provider
+
     'dataentry',
     'emails',
     'uploads',
@@ -61,6 +69,12 @@ INSTALLED_APPS = [
     "django_htmx",
 
 ]
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # Default
+    'allauth.account.auth_backends.AuthenticationBackend',  # Allauth
+)
+
 # Configure crispy template pack
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
@@ -213,3 +227,74 @@ if local_host:
     BASE_URL = "http://127.0.0.1:8000"
 else:
     BASE_URL = 'https://automation-project-chst.onrender.com'  # deploy server Base url
+
+
+
+
+# For django-allauth social accounts
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": "YOUR_GOOGLE_CLIENT_ID",
+            "secret": "YOUR_GOOGLE_CLIENT_SECRET",
+            "key": "",
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",   # or "offline" for refresh tokens
+        },
+        "EMAIL_AUTHENTICATION": True,  # ensures email is used
+    },
+
+    "github": {
+        "APP": {
+            "client_id": "Ov23li3MowImdlx8hurj",
+            "secret": "f0b036c258a0ab36bda692f024bf0d5bff0db96d",
+            "key": "",
+        },
+        "SCOPE": [
+            "user",
+            "user:email",
+        ],
+    },
+
+    "facebook": {
+        "APP": {
+            "client_id": "777445715155003",
+            "secret": "b2a2c0277c6a3481fcd99dcd13cdb439",
+            "key": "",
+        },
+        'AUTH_PARAMS':{
+            'auth_type':'reauthenticate',
+        },
+        "METHOD": "oauth2",
+        "SCOPE": ["email"],
+        "FIELDS": [
+            "id",
+            "email",
+            "name",
+            "first_name",
+            "last_name",
+        ],
+        "VERSION": "v12.0",
+    },
+}
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+
+SOCIALACCOUNT_LOGIN_ON_GET = True 
+SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_UNIQUE_EMAIL = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_EMAIL_VERIFICATION= "none"
+
+
+
+
+
+
