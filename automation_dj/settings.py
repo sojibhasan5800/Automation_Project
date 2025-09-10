@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'ckeditor',
     "django_browser_reload",
+    "django_htmx",
+
 ]
 # Configure crispy template pack
 CRISPY_TEMPLATE_PACK = "bootstrap5"

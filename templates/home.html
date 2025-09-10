@@ -106,11 +106,12 @@
             <a href="{% url 'account:login' %}" class="btn btn-primary">LOGIN</a>
             &nbsp;<a href="{% url 'account:register' %}" class="btn btn-success">REGISTER</a>
         </div>
+        <div style="display: flex; justify-content: center ;">
+              {% include "accounts/social_logins.html" %}
+        </div>
     </div>
-    <div>
-        {% include "accounts/social_logins.html" %}
-    </div>
-
+    <br>
+ 
     {% endif %}
 
 </div>
