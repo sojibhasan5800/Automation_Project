@@ -11,6 +11,21 @@ app = Celery('automation_dj')
 #   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
+# Set timezone
+app.conf.enable_utc = False
+app.conf.timezone = 'Asia/Dhaka'
+
+# Optional: beat schedule
+app.conf.beat_schedule = {
+    # Example:
+    # 'broadcast-every-day-4am': {
+    #     'task': 'notifications_app.tasks.broadcast_notification',
+    #     'schedule': crontab(hour=4, minute=0),
+    #     'args': ()
+    # }
+}
+
+
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 
