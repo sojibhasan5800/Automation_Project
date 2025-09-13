@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'dataentry',
     'emails',
     'uploads',
-    'account',
+    'account.apps.AccountConfig',
     'stockanalysis',
     'image_compression',
     'crispy_forms',
