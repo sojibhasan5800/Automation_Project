@@ -151,7 +151,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -174,21 +175,6 @@ MESSAGE_TAGS = {
     messages.ERROR: "danger",
     50: "critical",
 }
-# CELERY_BROKER_URL = 'redis://localhost:6379'
-
-
-# Celery
-# CELERY_BROKER_URL = os.getenv("REDIS_URL")  # Redis broker
-# CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")  # Task result save 
-
-CELERY_BROKER_URL = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
-CELERY_RESULT_BACKEND = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
-
-
-# CELERY_TIMEZONE = 'Asia/Dhaka'
-# CELERY_ACCEPT_CONTENT = ['json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
 
 
 CKEDITOR_CONFIGS = {
@@ -231,7 +217,39 @@ else:
 
 
 
-# For django-allauth social accounts
+# ---------- CELERY & REDIS PART ------------------
+# CELERY_BROKER_URL = os.getenv("REDIS_URL")  # Redis broker
+# CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")  # Task result save 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+production_redis= False
+if production_redis:
+    CELERY_BROKER_URL = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
+    CELERY_RESULT_BACKEND = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
+
+else:
+    CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+    CELERY_RESULT_BACKEND = 'django-db'
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_TIMEZONE = 'Asia/Dhaka'
+    CELERY_ENABLE_UTC = False 
+    CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+
+
+
+# --------------django-allauth social accounts part----------
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
