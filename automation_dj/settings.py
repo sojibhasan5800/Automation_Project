@@ -254,18 +254,18 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "APP": {"client_id": "", "secret": "", "key": ""},
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {"access_type": "online"},
-        "EMAIL_AUTHENTICATION": True,
-    },
+    # "google": {
+    #     "APP": {"client_id": "", "secret": "", "key": ""},
+    #     "SCOPE": ["profile", "email"],
+    #     "AUTH_PARAMS": {"access_type": "online"},
+    #     "EMAIL_AUTHENTICATION": True,
+    # },
     "github": {
-        "APP": {"client_id": "", "secret": "", "key": ""},
+        "APP": {"client_id": "Ov23li3MowImdlx8hurj", "secret": "f0b036c258a0ab36bda692f024bf0d5bff0db96d", "key": ""},
         "SCOPE": ["user", "user:email"],
     },
     "facebook": {
-        "APP": {"client_id": "", "secret": "", "key": ""},
+        "APP": {"client_id": "777445715155003", "secret": "b2a2c0277c6a3481fcd99dcd13cdb439", "key": ""},
         "AUTH_PARAMS": {"auth_type": "reauthenticate"},
         "METHOD": "oauth2",
         "SCOPE": ["email"],

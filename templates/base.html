@@ -130,12 +130,12 @@
           <!-- show logout button -->
           <div>
             Logged in as: <b>{{ user }}</b>
-            &nbsp;<a href="{% url 'account:logout' %}" class="float-right btn btn-outline-danger">Logout</a>
+            &nbsp;<a href="{% url 'accounts:logout' %}" class="float-right btn btn-outline-danger">Logout</a>
           </div>
           {% else %}
           <div>
-            <a href="{% url 'account:login' %}" class="float-right text-decoration-none text-dark">Login</a>
-            &nbsp;<a href="{% url 'account:register' %}" class="float-right btn btn-success">Register</a>
+            <a href="{% url 'accounts:login' %}" class="float-right text-decoration-none text-dark">Login</a>
+            &nbsp;<a href="{% url 'accounts:register' %}" class="float-right btn btn-success">Register</a>
           </div>
           {% endif %}
         </div>
