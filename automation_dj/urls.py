@@ -26,7 +26,7 @@ urlpatterns = [
     path('dataentry/', include('dataentry.urls')),
     path('celery-test/', views.celery_test),
     path('emails/', include('emails.urls')),
-    path('account/', include(('account.urls', 'account'), namespace='account')),
+    path('accounts/', include(('accounts.urls', 'accounts'), namespace='accounts')),
     path('image-compression/', include('image_compression.urls')),
     path('webscraping/', include('stockanalysis.urls')),
     path("__reload__/", include("django_browser_reload.urls")),

@@ -14,19 +14,17 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 import os
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ===================== SECURITY =====================
+
 SECRET_KEY = 'django-insecure--gfhi%t8p&0y_zehi_ig6py9%6jk81$gz76z+14%y4ogxt(2xb'
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECRET_KEY = config("SECRET_KEY", default="django-insecure-placeholder")
+# DEBUG = config("DEBUG", default=True, cast=bool)
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     "https://automation-project-chst.onrender.com",
@@ -37,11 +35,10 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 
-# Application definition
 
+# ===================== APPS =====================
 INSTALLED_APPS = [
-    'dal',
-    'dal_select2',
+    # Django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,34 +46,43 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',  # Required for allauth
-    # Allauth apps
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.github',   # GitHub provider
-    'allauth.socialaccount.providers.facebook', # Facebook provider
 
-    'dataentry',
-    'emails',
-    'uploads',
-    'account.apps.AccountConfig',
-    'stockanalysis',
-    'image_compression',
+    # Third-party apps
+    'dal',
+    'dal_select2',
     'crispy_forms',
     'crispy_bootstrap5',
     'ckeditor',
-    "django_browser_reload",
-    "django_htmx",
+    'django_browser_reload',
+    'django_htmx',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.facebook',
 
+    # Project apps
+    'dataentry',
+    'emails',
+    'uploads',
+    'accounts',  # Custom user model
+    'notifications_app',
+    'stockanalysis',
+    'image_compression',
 ]
+
+
 SITE_ID = 1
+
+# ===================== AUTH =====================
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Default
     'allauth.account.auth_backends.AuthenticationBackend',  # Allauth
 )
 
-# Configure crispy template pack
-CRISPY_TEMPLATE_PACK = "bootstrap5"
+# ===================== MIDDLEWARE =====================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -87,20 +93,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware", 
+    # Allauth middleware (after SessionMiddleware & AuthMiddleware)
+    'allauth.account.middleware.AccountMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
-ROOT_URLCONF = 'automation_dj.urls'
 
+
+# Configure crispy template pack
+
+# ===================== TEMPLATES =====================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request',  # Required by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -108,27 +119,50 @@ TEMPLATES = [
     },
 ]
 
+ROOT_URLCONF = 'automation_dj.urls'
 WSGI_APPLICATION = 'automation_dj.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# ===================== DATABASE =====================
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+USE_PRODUCTION_DB = False
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default= 'postgresql://auto_db_n7ad_user:aG1OrJ0j31iJQndoJF4k2yNnGlMZs3rd@dpg-d2rug23e5dus73cisa50-a.oregon-postgres.render.com/auto_db_n7ad'
-    )
-}
+if USE_PRODUCTION_DB:
+    # DATABASES = {
+    #     'default': dj_database_url.config(
+    #         default='postgresql://automation_db_6m8m_user:bqBkpNO4FlwA1MelNJ6iO66Sc8UWxm0N@dpg-d330m3odl3ps738g1jb0-a.oregon-postgres.render.com/automation_db_6m8m',
+    #         conn_max_age=600,    # optional, connection pooling
+    #         # ssl_require=True 
+    #     )
+    # }
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'automation_db_6m8m',
+            'USER': 'automation_db_6m8m_user',
+            'PASSWORD': 'bqBkpNO4FlwA1MelNJ6iO66Sc8UWxm0N',
+            'HOST': 'dpg-d330m3odl3ps738g1jb0-a.oregon-postgres.render.com',
+            'PORT': '5432',
+            'OPTIONS': {
+                'sslmode': 'require',  # Render always requires SSL
+            },
+        }
+        }
+
+else:
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
+
+
+# ===================== PASSWORD VALIDATION =====================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -146,174 +180,96 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+# ===================== INTERNATIONALIZATION =====================
 
 LANGUAGE_CODE = 'en-us'
-
-# TIME_ZONE = 'UTC'
 TIME_ZONE = 'Asia/Dhaka'
-
+# TIME_ZONE = 'UTC'
 USE_I18N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# ===================== STATIC & MEDIA =====================
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR /'static'
-STATICFILES_DIRS = [
-    'automation_dj/static',
-]
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [BASE_DIR / 'automation_dj/static']
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR /'media'
+MEDIA_ROOT = BASE_DIR / 'media'
 
+
+# ===================== CRISPY =====================
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+# ===================== MESSAGES =====================
 from django.contrib.messages import constants as messages
-MESSAGE_TAGS = {
-    messages.ERROR: "danger",
-    50: "critical",
-}
+MESSAGE_TAGS = {messages.ERROR: "danger", 50: "critical"}
 
+# ===================== CKEDITOR =====================
+CKEDITOR_CONFIGS = {'default': {'height': 200}}
 
-CKEDITOR_CONFIGS = {
-    'default': {
-        'height': 200,
-    },
-}
-
-# settings.py
+# ===================== EMAIL =====================
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'   
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'sojibhasan5800@gmail.com'    
-EMAIL_HOST_PASSWORD = 'vpdilgkjbkoabmta'   
-# EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = 'sojibhasan5800@gmail.com' 
+EMAIL_HOST_PASSWORD = 'vpdilgkjbkoabmta'
+# EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="sojibhasan5800@gmail.com")
+# EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="password")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# ===================== CELERY =====================
 
-# EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
-# ANYMAIL = {
-#     "SENDINBLUE_API_KEY": config("SENDINBLUE_API_KEY"),
-# }
-AUTH_USER_MODEL = 'account.CustomUser'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Dhaka'
+CELERY_ENABLE_UTC = False
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# CSRF_TRUSTED_ORIGINS = ['https://faff-114-79-178-247.ngrok-free.app']
-
-local_host= True
-if local_host:
-    BASE_URL = "http://127.0.0.1:8000"
-else:
-    BASE_URL = 'https://automation-project-chst.onrender.com'  # deploy server Base url
-
-
-
-
-# ---------- CELERY & REDIS PART ------------------
-# CELERY_BROKER_URL = os.getenv("REDIS_URL")  # Redis broker
-# CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")  # Task result save 
+# ===================== CHANNELS =====================
 
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
+        'CONFIG': {"hosts": [('127.0.0.1', 6379)],},
     },
 }
 
-production_redis= False
-if production_redis:
-    CELERY_BROKER_URL = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
-    CELERY_RESULT_BACKEND = 'redis://default:iefdT3irl2OXIK65euaHlK9KoKLZFnZF@redis-17257.c44.us-east-1-2.ec2.redns.redis-cloud.com:17257/0'
+# ===================== DJANGO-ALLAUTH =====================
 
-else:
-    CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-    CELERY_RESULT_BACKEND = 'django-db'
-    CELERY_ACCEPT_CONTENT = ['json']
-    CELERY_TASK_SERIALIZER = 'json'
-    CELERY_RESULT_SERIALIZER = 'json'
-    CELERY_TIMEZONE = 'Asia/Dhaka'
-    CELERY_ENABLE_UTC = False 
-    CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'accounts.adapter.CustomSocialAdapter'
+ACCOUNT_UNIQUE_EMAIL = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
-
-
-
-
-# --------------django-allauth social accounts part----------
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
-        "APP": {
-            "client_id": "YOUR_GOOGLE_CLIENT_ID",
-            "secret": "YOUR_GOOGLE_CLIENT_SECRET",
-            "key": "",
-        },
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
-        "AUTH_PARAMS": {
-            "access_type": "online",   # or "offline" for refresh tokens
-        },
-        "EMAIL_AUTHENTICATION": True,  # ensures email is used
+        "APP": {"client_id": "", "secret": "", "key": ""},
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "EMAIL_AUTHENTICATION": True,
     },
-
     "github": {
-        "APP": {
-            "client_id": "Ov23li3MowImdlx8hurj",
-            "secret": "f0b036c258a0ab36bda692f024bf0d5bff0db96d",
-            "key": "",
-        },
-        "SCOPE": [
-            "user",
-            "user:email",
-        ],
+        "APP": {"client_id": "", "secret": "", "key": ""},
+        "SCOPE": ["user", "user:email"],
     },
-
     "facebook": {
-        "APP": {
-            "client_id": "777445715155003",
-            "secret": "b2a2c0277c6a3481fcd99dcd13cdb439",
-            "key": "",
-        },
-        'AUTH_PARAMS':{
-            'auth_type':'reauthenticate',
-        },
+        "APP": {"client_id": "", "secret": "", "key": ""},
+        "AUTH_PARAMS": {"auth_type": "reauthenticate"},
         "METHOD": "oauth2",
         "SCOPE": ["email"],
-        "FIELDS": [
-            "id",
-            "email",
-            "name",
-            "first_name",
-            "last_name",
-        ],
+        "FIELDS": ["id", "email", "name", "first_name", "last_name"],
         "VERSION": "v12.0",
     },
 }
-
-SOCIALACCOUNT_LOGIN_ON_GET = True
-
-
-SOCIALACCOUNT_LOGIN_ON_GET = True 
-SOCIALACCOUNT_AUTO_SIGNUP = True
-ACCOUNT_UNIQUE_EMAIL = True
-SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
-SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
-SOCIALACCOUNT_EMAIL_VERIFICATION= "none"
-
-ACCOUNT_ADAPTER = 'account.adapter.CustomAccountAdapter'
-SOCIALACCOUNT_ADAPTER = 'account.adapter.CustomSocialAdapter'
-
-
-
-
