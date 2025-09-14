@@ -31,7 +31,7 @@ def create_token(sender, instance, created, **kwargs):
         context = {
             "username": instance.username,
             "otp": otp_codes,
-            "verify_url": f"https://automation-project-chst.onrender.com/account/verify-email/{instance.username}/{uidb64}",
+            "verify_url": f"https://automation-project-chst.onrender.com/accounts/verify-email/{instance.username}/{uidb64}",
         }
        
         

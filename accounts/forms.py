@@ -18,7 +18,14 @@ class RegistrationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         # username automatically from email
-        user.username = self.cleaned_data['email'].split('@')[0]
+        base_username  = self.cleaned_data['email'].split('@')[0]
+
+        username = base_username
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}{counter}"
+            counter += 1
+        user.username = username
         if commit:
             user.save()
         return user

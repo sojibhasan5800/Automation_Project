@@ -5,7 +5,7 @@
 
 <div class="container mt-5 p-3 shadow rounded" style="max-width: 600px;">
     <h2 class="text-center">Register</h2>
-    <form action="{% url 'account:register' %}" method="POST">
+    <form action="{% url 'accounts:register' %}" method="POST">
         {% csrf_token %}
 
         <div class="form-group">

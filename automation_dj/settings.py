@@ -76,6 +76,7 @@ SITE_ID = 1
 
 # ===================== AUTH =====================
 AUTH_USER_MODEL = 'accounts.CustomUser'
+LOGIN_REDIRECT_URL = '/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Default
@@ -118,6 +119,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 ROOT_URLCONF = 'automation_dj.urls'
 WSGI_APPLICATION = 'automation_dj.wsgi.application'
@@ -192,8 +194,9 @@ USE_TZ = True
 # ===================== STATIC & MEDIA =====================
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS = [BASE_DIR / 'automation_dj/static']
+# STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [BASE_DIR / BASE_DIR / 'automation_dj' / 'static', ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -245,13 +248,16 @@ CHANNEL_LAYERS = {
 
 # ===================== DJANGO-ALLAUTH =====================
 
-ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'accounts.adapter.CustomSocialAdapter'
+ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
 ACCOUNT_UNIQUE_EMAIL = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
-SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_AUTO_SIGNUP = False
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+
+# SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+
 
 SOCIALACCOUNT_PROVIDERS = {
     # "google": {

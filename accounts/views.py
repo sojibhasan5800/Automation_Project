@@ -21,7 +21,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             messages.success(request, "Account created successfully! An OTP was sent to your Email")
-            return redirect("account:verify-email",  username=user.username)
+            return redirect("accounts:verify-email",  username=user.username)
         else:
             context = {'form': form}
             return render(request, 'accounts/register.html', context)
@@ -51,18 +51,18 @@ def verify_email(request,username):
                 generate_tracking_email_user(user.email)
 
                 messages.success(request, "Account activated successfully!! You can Login.")
-                return redirect("account:login")
+                return redirect("accounts:login")
             
             # expired token
             else:
                 messages.warning(request, "The OTP has expired, get a new OTP!")
-                return redirect("account:verify-email", username=user.username)
+                return redirect("accounts:verify-email", username=user.username)
         
         
         # invalid otp code
         else:
             messages.warning(request, "Invalid OTP entered, enter a valid OTP!")
-            return redirect("account:verify-email", username=user.username)
+            return redirect("accounts:verify-email", username=user.username)
         
     context = {
         'username':username
@@ -83,18 +83,18 @@ def auto_active_verify_email(request,username,uidb64):
             user.is_active=True
             user.save()
             messages.success(request, "Account activated successfully!! You can Login.")
-            return redirect("account:login")
+            return redirect("accounts:login")
         
         # expired token
         else:
             messages.warning(request, "The OTP has expired, get a new OTP!")
-            return redirect("account:verify-email", username=user.username)
+            return redirect("accounts:verify-email", username=user.username)
     
     
     # invalid otp code
     else:
         messages.warning(request, "Invalid OTP entered, enter a valid OTP!")
-        return redirect("account:verify-email", username=user.username)
+        return redirect("accounts:verify-email", username=user.username)
     
    
 
@@ -112,7 +112,7 @@ def resend_otp(request):
             context = {
                 "username": user.username,
                 "otp": otp_codes,
-                "verify_url": f"https://automation-project-chst.onrender.com/account/verify-email/{user.username}/{uidb64}",
+                "verify_url": f"https://automation-project-chst.onrender.com/accounts/verify-email/{user.username}/{uidb64}",
             }
             
             

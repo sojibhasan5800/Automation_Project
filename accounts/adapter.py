@@ -1,50 +1,57 @@
-# a_users/adapter.py
+# accounts/adapter.py
 
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.shortcuts import resolve_url
 from allauth.account.models import EmailAddress
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
 
-# Normal signup redirect
 class CustomAccountAdapter(DefaultAccountAdapter):
-    def get_signup_redirect_url(self, request):
-        return resolve_url("profile-onboarding")
+    def get_login_redirect_url(self, request):
+        # login বা signup successful হলে হোমে redirect হবে
+        return resolve_url("home")
 
-# Social signup redirect
+    
 class CustomSocialAdapter(DefaultSocialAccountAdapter):
-    def get_connect_redirect_url(self, request, socialaccount=None):
-        return resolve_url("profile-onboarding")
+    """
+    Custom adapter to connect social accounts to existing users
+    with the same email to prevent UNIQUE constraint errors.
+    """
 
-
- 
-class SocialAccountAdapter(DefaultSocialAccountAdapter): 
-        
     def pre_social_login(self, request, sociallogin):
-        email = sociallogin.account.extra_data.get("email")
+        """
+        This method is called before social login is processed.
+        If a user with the same email exists, connect the social account
+        to the existing user instead of creating a new one.
+        """
+        email = sociallogin.account.extra_data.get('email')
         if not email:
             return
-        if not sociallogin.is_existing:
-            existing_user = User.objects.fillter(email=email).first()
-            if existing_user:
-                sociallogin.connect(request,existing_user)
-                
-        if sociallogin.is_existing: 
-            user = sociallogin.user 
-            email_address,created = EmailAddress.objects.get_or_create(user=user, email=email)
-        
-        if not email_address.verified:
-            email_address.verified= True 
-            email_address.save()
-    
-    def save_user(self,request,sociallogin,form=None):
-        user = super().save_user(request,sociallogin,form)
-        email = user.email
-        email_address,created = EmailAddress.objects.get_or_create(user=user, email=email)
-        
-        if not email_address.verified:
-            email_address.verified= True 
-            email_address.save()        
-        
-        return user
+
+        try:
+            existing_user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            existing_user = None
+
+        if existing_user:
+            # Connect this social account to existing user
+            sociallogin.connect(request, existing_user)
+            # Mark the process as connecting instead of signup
+            sociallogin.state['process'] = 'connect'
+
+    def save_user(self, request, sociallogin, form=None):
+        """
+        Override save_user to prevent creating duplicates
+        if the user already exists.
+        """
+        user = sociallogin.user
+        if User.objects.filter(email=user.email).exists():
+            # Return existing user
+            user = User.objects.get(email=user.email)
+            sociallogin.user = user
+            return user
+        else:
+            # Call default save_user method
+            return super().save_user(request, sociallogin, form)
