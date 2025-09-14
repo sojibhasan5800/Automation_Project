@@ -267,7 +267,7 @@ SOCIALACCOUNT_PROVIDERS = {
     #     "EMAIL_AUTHENTICATION": True,
     # },
     "github": {
-        "APP": {"client_id": "Ov23li3MowImdlx8hurj", "secret": "f0b036c258a0ab36bda692f024bf0d5bff0db96d", "key": ""},
+        "APP": {"client_id": "Ov23li3MowImdlx8hurj", "secret": "1910ed0e1a09ca0750a3bc495db30f4819d99e36", "key": ""},
         "SCOPE": ["user", "user:email"],
     },
     "facebook": {

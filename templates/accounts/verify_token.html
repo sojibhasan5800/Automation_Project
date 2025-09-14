@@ -37,7 +37,7 @@
 <div class="verify-container">
     <h3>Verify Your Email</h3>
     
-    <form action="{% url 'account:verify-email' username=username %}" method="POST">
+    <form action="{% url 'accounts:verify-email' username=username %}" method="POST">
         {% csrf_token %}
         <div class="mb-3">
             <label class="form-label">Enter OTP</label>
@@ -52,7 +52,7 @@
     </div>
 
     <p class="resend">
-        Didn’t receive OTP? <a href="{% url 'account:resend-otp' %}">Resend OTP</a>
+        Didn’t receive OTP? <a href="{% url 'accounts:resend-otp' %}">Resend OTP</a>
     </p>
 </div>
 

@@ -24,7 +24,7 @@
 </style>
 
 
-    <form action="" method='POST'>
+    <form action="{% url 'accounts:verify-email' %}" method='POST'>
         {% csrf_token %}
         <h3><strong>Resend OTP</strong></h3>
         <div class="mb-3">

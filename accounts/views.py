@@ -156,7 +156,7 @@ def login(request):
                 return redirect('home')
         else:
             messages.error(request, 'Invalid credentials')
-            return redirect('account:login')
+            return redirect('accounts:login')
     else:
         form = AuthenticationForm()
         context = {'form': form,}
