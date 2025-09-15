@@ -36,23 +36,16 @@ def verify_email(request,username):
     user = get_user_model().objects.get(username=username)
     user_otp = OtpToken.objects.filter(user=user).last()
 
- 
-
-    # if not user_otp:
-    #     messages.warning(request, "No OTP found for this user, please request a new one.")
-    #     return redirect("accounts:resend-otp", username=user.username)
-   
+    if not user_otp:
+        messages.warning(request, "No OTP found for this user, please request a new one.")
+        return redirect("accounts:resend-otp", username=user.username)
     
+   # calculate remaining time for countdown
+    now = timezone.now()
+    time_left = max((user_otp.otp_expires_at - now).total_seconds(), 0)
+
     if request.method == 'POST':
-        
-        if not user_otp:
-            messages.warning(request,  "A new OTP has been sent to your email. Please check your inbox.")
-            return redirect("accounts:verify-email", username=user.username)
-        
-           # calculate remaining time for countdown
-        now = timezone.now()
-        time_left = max((user_otp.otp_expires_at - now).total_seconds(), 0)
-        
+
         # valid token
         if user_otp.otp_code == request.POST['otp_code']:
            

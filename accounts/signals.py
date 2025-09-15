@@ -39,7 +39,9 @@ def create_token(sender, instance, created, **kwargs):
         # HTML Template render
         subject = "Verify Your Email Address"
         from_email = settings.EMAIL_HOST_USER
+        print(from_email)
         to_email = [instance.email]
+        print(to_email)
         
         text_content = render_to_string("accounts/otp_email.txt", context)  # fallback text
         html_content = render_to_string("accounts/otp_email.html", context)  # beautiful design
@@ -48,4 +50,5 @@ def create_token(sender, instance, created, **kwargs):
         msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
+        print("passing")
   
