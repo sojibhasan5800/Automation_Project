@@ -1,0 +1,145 @@
+
+      .form-group{
+        padding: 15px !important;
+      }
+      .home-info{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+      }
+   
+.social-login-container {
+    max-width: 400px;
+    margin: 40px auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #555;
+    font-weight: bold;
+}
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid #ccc;
+}
+.divider span {
+    margin: 0 12px;
+    font-size: 14px;
+}
+
+/* Buttons */
+.social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Icon */
+.icon {
+    width: 22px;
+    height: 22px;
+}
+
+/* GitHub Button (white background, black text & icon) */
+.github-btn {
+    background: #fff;
+    color: #24292e;
+    border: 2px solid #24292e;
+}
+.github-btn:hover {
+    background: #d4343440;
+}
+
+/* Facebook Button (brand blue) */
+.facebook-btn {
+    background: #1877f2;
+    color: #fff;
+    border: none;
+}
+.facebook-btn:hover {
+    background: #0d5bd7;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .social-login-container {
+        width: 90%;
+    }
+    .btn {
+        font-size: 14px;
+        padding: 12px;
+    }
+}
+
+        .notification {
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            padding: 4px 24px;
+            margin-right: 20px;
+            margin-left: 20px;
+            position: relative;
+            display: inline-block;
+            border-radius: 2px;
+            font-size: 20px;
+        }
+
+        .notification:hover {
+            background: #0b5ed7;
+            color: #fff;
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            padding: 8px 8px;
+            border-radius: 50%;
+            background: red;
+            color: white;
+        }
+
+        .notification-section .dropdown-toggle::after {
+            content: none;
+        }
+
+        .dropdown-toggle::after {
+            color: #fff;
+        }
+
+        #notifications-dropdown li {
+            max-width: 500px;
+            word-wrap: break-word;
+            display: inline-block;
+            white-space: normal;
+        }
+
+        #notifications-dropdown.dropdown-menu {
+            width: 15rem;
+        }
+        
+
+
+

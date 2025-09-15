@@ -15,110 +15,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     
     <script src="{% static 'js/custom.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
     <!-- CKEditor Scripts -->
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <style>
-      .form-group{
-        padding: 15px !important;
-      }
-      .home-info{
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 20px;
-      }
-   
-.social-login-container {
-    max-width: 400px;
-    margin: 40px auto;
-    text-align: center;
-    font-family: Arial, sans-serif;
-}
-
-/* Divider */
-.divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 25px;
-    color: #555;
-    font-weight: bold;
-}
-.divider::before,
-.divider::after {
-    content: "";
-    flex: 1;
-    border-top: 1px solid #ccc;
-}
-.divider span {
-    margin: 0 12px;
-    font-size: 14px;
-}
-
-/* Buttons */
-.social-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-.btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-/* Icon */
-.icon {
-    width: 22px;
-    height: 22px;
-}
-
-/* GitHub Button (white background, black text & icon) */
-.github-btn {
-    background: #fff;
-    color: #24292e;
-    border: 2px solid #24292e;
-}
-.github-btn:hover {
-    background: #d4343440;
-}
-
-/* Facebook Button (brand blue) */
-.facebook-btn {
-    background: #1877f2;
-    color: #fff;
-    border: none;
-}
-.facebook-btn:hover {
-    background: #0d5bd7;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-    .social-login-container {
-        width: 90%;
-    }
-    .btn {
-        font-size: 14px;
-        padding: 12px;
-    }
-}
-
-
-
-    </style>
 
 </head>
 <body>
@@ -132,6 +35,28 @@
             Logged in as: <b>{{ user }}</b>
             &nbsp;<a href="{% url 'accounts:logout' %}" class="float-right btn btn-outline-danger">Logout</a>
           </div>
+           <div>
+
+                 <li class="nav-item dropdown notification-section">
+                    <a href="#" class="notification dropdown-toggle" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="true">
+                        <span><i class='fa fa-bell'></i></span>
+                        <span class="badge" id="notification-badge">0</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown"
+                        data-popper-placement="bottom-end"
+                        style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-70px, 42px, 0px);">
+                        
+                        {% for i in notifications %}
+                        <li class="dropdown-item">{{i.message}}</li>
+                        <hr class="dropdown-divider">
+                        {% endfor %}
+                        {% comment %} <li class='dropdown-item'>Hello</li>
+                        <hr class="dropdown-divider"> {% endcomment %}
+                        
+                    </ul>
+                </li>
+           </div>
           {% else %}
           <div>
             <a href="{% url 'accounts:login' %}" class="float-right text-decoration-none text-dark">Login</a>
