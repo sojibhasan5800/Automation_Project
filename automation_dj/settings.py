@@ -279,3 +279,12 @@ SOCIALACCOUNT_PROVIDERS = {
         "VERSION": "v12.0",
     },
 }
+
+# ===================== BASE URLS =====================
+
+USE_PRODUCTION_URL = False
+base_url = None
+if USE_PRODUCTION_URL:
+    BASE_URL="https://automation-project-chst.onrender.com"
+else:
+    BASE_URL = "http://127.0.0.1:8000"

@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from dataentry.utlis import generate_tracking_email_user
+from django.conf import settings
 # Create your views here.
 
 def register(request):
@@ -115,11 +116,12 @@ def resend_otp(request,username):
             
             otp_codes = otp.otp_code
             uidb64= urlsafe_base64_encode(force_bytes(otp_codes))
+            site_url = settings.BASE_URL
             # context data
             context = {
                 "username": user.username,
                 "otp": otp_codes,
-                "verify_url": f"https://automation-project-chst.onrender.com/accounts/verify-email/{user.username}/{uidb64}",
+                "verify_url": f"{site_url}/accounts/verify-email/{user.username}/{uidb64}",
             }
             
             

@@ -8,6 +8,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+from django.conf import settings
 
  
 @receiver(post_save, sender=settings.AUTH_USER_MODEL) 
@@ -27,11 +28,12 @@ def create_token(sender, instance, created, **kwargs):
         otp = OtpToken.objects.filter(user=instance).last()
         otp_codes = otp.otp_code
         uidb64= urlsafe_base64_encode(force_bytes(otp_codes))
+        site_url = settings.BASE_URL
         # context data
         context = {
             "username": instance.username,
             "otp": otp_codes,
-            "verify_url": f"https://automation-project-chst.onrender.com/accounts/verify-email/{instance.username}/{uidb64}",
+            "verify_url": f"{site_url}/accounts/verify-email/{instance.username}/{uidb64}",
         }
        
         
@@ -39,9 +41,7 @@ def create_token(sender, instance, created, **kwargs):
         # HTML Template render
         subject = "Verify Your Email Address"
         from_email = settings.EMAIL_HOST_USER
-        print(from_email)
         to_email = [instance.email]
-        print(to_email)
         
         text_content = render_to_string("accounts/otp_email.txt", context)  # fallback text
         html_content = render_to_string("accounts/otp_email.html", context)  # beautiful design
@@ -50,5 +50,5 @@ def create_token(sender, instance, created, **kwargs):
         msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        print("passing")
+   
   
