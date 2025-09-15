@@ -194,9 +194,9 @@ USE_TZ = True
 # ===================== STATIC & MEDIA =====================
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS = [BASE_DIR / BASE_DIR / 'automation_dj' / 'static', ]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [BASE_DIR / 'automation_dj' / 'static', ]
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

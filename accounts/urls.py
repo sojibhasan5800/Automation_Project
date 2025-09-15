@@ -10,6 +10,6 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path("verify-email/<slug:username>", views.verify_email, name="verify-email"),
     path("verify-email/<slug:username>/<uidb64>/", views.auto_active_verify_email, name="auto_verify-email"),
-    path("resend-otp", views.resend_otp, name="resend-otp"),
+    path("resend-otp/<slug:username>", views.resend_otp, name="resend-otp"),
     
 ]

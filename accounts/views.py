@@ -20,7 +20,7 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, "Account created successfully! An OTP was sent to your Email")
+            messages.success(request, "Account created! Please verify your email with the OTP sent to you.")
             return redirect("accounts:verify-email",  username=user.username)
         else:
             context = {'form': form}
@@ -35,11 +35,17 @@ def register(request):
 def verify_email(request,username):
     user = get_user_model().objects.get(username=username)
     user_otp = OtpToken.objects.filter(user=user).last()
+
+    # if not user_otp:
+    #     messages.warning(request, "No OTP found for this user, please request a new one.")
+    #     return redirect("accounts:resend-otp", username=user.username)
    
     
     if request.method == 'POST':
         
-
+        if not user_otp:
+            messages.warning(request,  "A new OTP has been sent to your email. Please check your inbox.")
+            return redirect("accounts:verify-email", username=user.username)
         # valid token
         if user_otp.otp_code == request.POST['otp_code']:
            
@@ -98,7 +104,8 @@ def auto_active_verify_email(request,username,uidb64):
     
    
 
-def resend_otp(request):
+def resend_otp(request,username):
+
     if request.method == 'POST':
         user_email = request.POST["otp_email"]
         
@@ -131,14 +138,16 @@ def resend_otp(request):
             msg.send()
                 
             messages.success(request, "A new OTP has been sent to your email-address")
-            return redirect("account:verify-email", username=user.username)
+            return redirect("accounts:verify-email", username=user.username)
 
         else:
             messages.warning(request, "This email dosen't exist in the database")
             return redirect("account:resend-otp")
         
            
-    context = {}
+    context = {
+        'username':username
+    }
     return render(request, "accounts/resend_otp.html", context)
 
 

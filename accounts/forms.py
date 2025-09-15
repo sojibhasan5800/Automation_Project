@@ -26,6 +26,7 @@ class RegistrationForm(UserCreationForm):
             username = f"{base_username}{counter}"
             counter += 1
         user.username = username
+        user.is_active = False 
         if commit:
             user.save()
         return user
