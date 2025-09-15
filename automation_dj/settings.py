@@ -238,6 +238,7 @@ CELERY_ENABLE_UTC = False
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # ===================== CHANNELS =====================
+ASGI_APPLICATION = 'automation_dj.asgi.application'
 
 CHANNEL_LAYERS = {
     'default': {
