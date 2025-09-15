@@ -2,73 +2,68 @@
 
 {% block content %}
 <style>
-    .verify-container {
-        max-width: 500px;
-        background: #fff;
-        padding: 25px;
-        margin: 50px auto;
-        border-radius: 12px;
-        box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;
-        text-align: center;
-    }
-    .verify-container h3 {
-        margin-bottom: 15px;
-        color: #2c3e50;
-        font-weight: bold;
-    }
-    .otp-box {
-        font-size: 18px;
-        color: #e74c3c;
-        font-weight: bold;
-        margin: 15px 0;
-    }
-    .countdown {
-        font-size: 18px;
-        color: #2c3e50;
-        font-weight: 600;
-        margin: 10px 0;
-    }
-    .resend {
-        margin-top: 15px;
-        font-size: 14px;
-    }
+.verify-container {
+    max-width: 500px;
+    background: #fff;
+    padding: 25px;
+    margin: 50px auto;
+    border-radius: 12px;
+    box-shadow: rgba(0,0,0,0.2) 0px 8px 24px;
+    text-align: center;
+}
+.verify-container h3 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-weight: bold;
+}
+.countdown {
+    font-size: 18px;
+    color: #2c3e50;
+    font-weight: 600;
+    margin: 10px 0;
+}
+.resend {
+    margin-top: 15px;
+    font-size: 14px;
+    display: {% if show_resend %}block{% else %}none{% endif %};
+}
 </style>
-     {% include 'alerts.html' %}
+
+{% include 'alerts.html' %}
+
 <div class="verify-container">
     <h3>Verify Your Email</h3>
-    
+
     <form action="{% url 'accounts:verify-email' username=username %}" method="POST">
         {% csrf_token %}
         <div class="mb-3">
             <label class="form-label">Enter OTP</label>
             <input class="form-control" name="otp_code" placeholder="Enter OTP" required>
         </div>
-
         <button class="btn btn-primary w-100">Activate Account</button>
     </form>
 
     <div class="countdown">
-        OTP will expire in: <span id="countdown"></span>
+        OTP will expire in: <span id="countdown">{{ time_left }}</span>
     </div>
 
     <p class="resend">
-        Didn’t receive OTP? <a href="{% url 'accounts:resend-otp' username %}">Resend OTP</a>
+        Didn’t receive OTP? <a href="{% url 'accounts:resend-otp' username=username %}">Resend OTP</a>
     </p>
 </div>
 
 <script>
-    // 2 min = 120 seconds
-    let timeLeft = 120;
-    let timer = setInterval(function(){
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-        document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s";
-
-        timeLeft -= 1;
-        if(timeLeft < 0){
-            clearInterval(timer);
-            document.getElementById("countdown").innerHTML = "Expired ❌";
-        }
-    }, 1000);
+let timeLeft = {{ time_left_seconds|default:120 }};
+let timer = setInterval(function(){
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s";
+    timeLeft -= 1;
+    if(timeLeft < 0){
+        clearInterval(timer);
+        document.getElementById("countdown").innerHTML = "Expired ❌";
+        document.querySelector(".resend").style.display = "block";
+    }
+}, 1000);
 </script>
 {% endblock content %}
