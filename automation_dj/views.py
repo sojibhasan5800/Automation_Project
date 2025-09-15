@@ -6,7 +6,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import auth
 
 def home(request):
-    return render(request, 'home.html')
+    context = {}
+    if request.user.is_authenticated:
+        # Only generate room_name for authenticated users
+        context['room_name'] = f"user_{request.user.id}" 
+
+    return render(request, 'home.html',context)
 
 def celery_test(request):
     # I want to execute a time consuming task here
