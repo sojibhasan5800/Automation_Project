@@ -19,6 +19,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'automation_dj.settings')
 application = get_asgi_application()
 
 from channels.auth import AuthMiddleware, AuthMiddlewareStack
+# from notifications_app.routing import websocket_urlpatterns
 from notifications_app.routing import websocket_urlpatterns
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),

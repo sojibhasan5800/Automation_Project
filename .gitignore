@@ -12,6 +12,9 @@ db.sqlite3-journal
 media
 #celery -A automation_dj worker --loglevel=info --pool=solo
 # source venv/Scripts/activate
+# daphne -p 8001 automation_dj.asgi:application
+# celery -A automation_dj beat -l info -S django --pidfile=
+# celery -A automation_dj worker --pool=solo -l info
 
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/

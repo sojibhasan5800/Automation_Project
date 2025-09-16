@@ -65,38 +65,40 @@
           {% endif %}
         </div>
     </nav> 
-
     {% block content %}
         <!-- All your html main content will go here -->
     {% endblock %}
-    
-    <!-- WebSocket Notifications -->
+
+
     {% if user.is_authenticated and room_name %}
-    <script>
-        const roomName = JSON.parse('{{ room_name|json_script:"room-name" }}');
-        const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
-        const notificationSocket = new WebSocket(
-            wsScheme + "://" + window.location.host + "/ws/notification/" + roomName + "/"
-        );
+<script>
+   
+    const roomName = "{{ room_name }}";  // simple string interpolation
+    console.log("Room:", roomName);
 
-        notificationSocket.onopen = function(e) {
-            console.log("WebSocket connected!");
-        };
+    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const notificationSocket = new WebSocket(
+        wsScheme + "://" + window.location.host + "/ws/notification/" + roomName + "/"
+    );
 
-        notificationSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            const dropdown = document.getElementById("notifications-dropdown");
-            dropdown.innerHTML = `<li class="dropdown-item">${data.text}</li><hr class="dropdown-divider">` + dropdown.innerHTML;
+    notificationSocket.onopen = function(e) {
+        console.log("WebSocket connected!");
+    };
 
-            const badge = document.getElementById("notification-badge");
-            badge.innerHTML = parseInt(badge.innerHTML) + 1;
-        };
+    notificationSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const dropdown = document.getElementById("notifications-dropdown");
+        dropdown.innerHTML = `<li class="dropdown-item">${data.text}</li><hr class="dropdown-divider">` + dropdown.innerHTML;
 
-        notificationSocket.onclose = function(e) {
-            console.error("Notification socket closed unexpectedly.");
-        };
-    </script>
-    {% endif %}
+        const badge = document.getElementById("notification-badge");
+        badge.innerHTML = parseInt(badge.innerHTML) + 1;
+    };
+
+    notificationSocket.onclose = function(e) {
+        console.error("Notification socket closed unexpectedly.");
+    };
+</script>
+{% endif %}
 
 
 </body>

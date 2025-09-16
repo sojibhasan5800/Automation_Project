@@ -38,6 +38,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 # ===================== APPS =====================
 INSTALLED_APPS = [
+    'daphne',
     # Django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,6 +61,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.facebook',
+    'channels',
+    'django_celery_beat',
+    'django_celery_results',
 
     # Project apps
     'dataentry',
