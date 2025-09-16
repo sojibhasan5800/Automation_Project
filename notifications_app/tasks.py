@@ -11,7 +11,7 @@ import asyncio
 
 
 @shared_task(bind=True)
-def broadcast_notification(self, notification_id):
+def broadcast_notification(self, notification_id,user_id):
     print("Task started with ID:", notification_id)
     try:
         # Queryset এর পরিবর্তে সরাসরি get ব্যবহার করো
@@ -22,7 +22,7 @@ def broadcast_notification(self, notification_id):
         print("Channel layer:", channel_layer)
 
         async_to_sync(channel_layer.group_send)(
-            f"notification_{notification_id}",
+            f"notification_{user_id}",
             {
                 "type": "send_notification",
                 "message": json.dumps({

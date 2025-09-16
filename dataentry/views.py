@@ -15,6 +15,7 @@ def import_data(request):
         file_path = request.FILES.get('file_path')
         model_name = request.POST.get('model_name')
         user_email = request.user.email
+        user_id = request.user.id
         
         # store this file inside the Upload model
         upload = Upload.objects.create(file=file_path, model_name=model_name)
@@ -32,7 +33,7 @@ def import_data(request):
             return redirect('import_data')
         
         # handle the import data task here
-        import_data_task.delay(file_path, model_name,user_email)
+        import_data_task.delay(file_path, model_name,user_email,user_id)
 
         # show the message to the user
         messages.success(request, 'Your data is being imported, you will be notified Email when once it is done.')
@@ -52,9 +53,10 @@ def export_data(request):
     if request.method == 'POST':
         model_name = request.POST.get('model_name')
         user_email = request.user.email
+        user_id = request.user.id
 
         # call the export data task
-        export_data_task.delay(model_name,user_email)
+        export_data_task.delay(model_name,user_email,user_id)
 
         # show the message to the user
         messages.success(request, "Please check your email — the exported data file has been sent to you.")
