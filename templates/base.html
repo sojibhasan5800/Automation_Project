@@ -70,10 +70,10 @@
     {% endblock %}
 
 
-    {% if user.is_authenticated and room_name %}
+    {% if user.is_authenticated %}
 <script>
    
-    const roomName = "{{ room_name }}";  // simple string interpolation
+     const roomName = "{{ user.id }}";  // simple string interpolation
     console.log("Room:", roomName);
 
     const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
