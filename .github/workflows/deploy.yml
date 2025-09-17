@@ -1,10 +1,11 @@
 name: Django CI/CD - Render Deploy
 
 on:
-  push:
-    branches:
-      - main   # Run workflow only when pushing to main branch
-  pull_request:
+  workflow_dispatch: # Remove this then deploy ready 
+  # push: # uncomment this 
+  #   branches:
+  #     - main   # Run workflow only when pushing to main branch
+  # pull_request:
 
 jobs:
   build:
