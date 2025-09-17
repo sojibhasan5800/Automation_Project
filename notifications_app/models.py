@@ -5,7 +5,7 @@ from django_celery_beat.models import PeriodicTask, CrontabSchedule
 import json
 from django.utils import timezone
 from django.conf import settings
-from datetime import timedelta
+from datetime import timedelta,timezone as dt_timezone
 
 class BroadcastNotification(models.Model):
     user = models.ForeignKey(
@@ -37,7 +37,7 @@ def notification_handler(sender, instance, created, **kwargs):
         # run_time = instance.broadcast_on.astimezone(timezone.utc)
 
         # Convert run_time to UTC because Celery Beat Crontab uses UTC internally
-        run_time_utc = run_time.astimezone(timezone.utc)
+        run_time_utc = run_time.astimezone(dt_timezone.utc)
 
         # Create or get crontab schedule for the run_time_utc
         schedule, _ = CrontabSchedule.objects.get_or_create(
