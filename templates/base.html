@@ -47,10 +47,20 @@
                         data-popper-placement="bottom-end"
                         style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-70px, 42px, 0px);">
                         
-                        {% for i in notifications %}
-                        <li class="dropdown-item">{{i.message}}</li>
+                    {% for i in notifications %}
+                        <li class="dropdown-item">
+                        <div class="d-flex align-items-start">
+                            <div class="me-2">
+                            <i class="fa fa-bell text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                            <div>{{ i.message }}</div>
+                            <small class="text-muted">{{ i.broadcast_on|date:"M d, Y H:i" }}</small>
+                            </div>
+                        </div>
+                        </li>
                         <hr class="dropdown-divider">
-                        {% endfor %}
+                    {% endfor %}
                         {% comment %} <li class='dropdown-item'>Hello</li>
                         <hr class="dropdown-divider"> {% endcomment %}
                         
