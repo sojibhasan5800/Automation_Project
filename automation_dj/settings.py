@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'channels',
     'django_celery_beat',
     'django_celery_results',
+    'rest_framework',
 
     # Project apps
     'dataentry',
