@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'notifications_app',
     'stockanalysis',
     'image_compression',
+    'resumechecker',
 ]
 
 
