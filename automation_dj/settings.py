@@ -119,6 +119,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',  # Required by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'notifications_app.custom_context_processors.notifications'
             ],
         },
     },
@@ -162,6 +163,9 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+            # 'OPTIONS': {
+            #     'timeout': 20,  # seconds
+            # },
         }
     }
 
@@ -237,6 +241,7 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_BEAT_MAX_LOOP_INTERVAL = 30  # If SQLite Use Then Ignore this 
 CELERY_TIMEZONE = 'Asia/Dhaka'
 CELERY_ENABLE_UTC = False
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
