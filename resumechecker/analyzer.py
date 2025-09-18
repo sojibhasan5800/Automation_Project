@@ -67,3 +67,18 @@ def analyze_resume_with_llm(resume_text:str, job_descrption:str)->dict:
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+
+
+def process_resume(pdf_path, job_description):
+    try:
+        resume_text = extract_text_from_pdf(pdf_path)
+        numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        squared_numbers = []
+        squared_numbers.extend(num ** 2 for num in numbers if num % 2 == 0)
+        # print(squared_numbers)
+
+        return analyze_resume_with_llm(resume_text, job_description)
+    except Exception as e:
+        print(e)
+        return None
+
