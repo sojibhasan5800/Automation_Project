@@ -14,6 +14,8 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 import os
+# Initialise environment variables
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -300,3 +302,8 @@ if USE_PRODUCTION_URL:
     BASE_URL="https://automation-project-chst.onrender.com"
 else:
     BASE_URL = "http://127.0.0.1:8000"
+
+# ===================== ENV CONFIG =====================
+GROQ_API_KEY = config("GROQ_API_KEY")
+
+
