@@ -1,12 +1,12 @@
 
 
 {% extends 'base.html' %}
-    
+{% load static %}
 
 
 {% block content %}
 
-    <div class="container">
+    <div class="container mt-3">
   <div class="card p-4">
     <h3 class="mb-3 text-center">Upload a PDF</h3>
 
@@ -52,5 +52,13 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/resumecheckers.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/resumecheckers.js' %}"></script>
 {% endblock %}
 

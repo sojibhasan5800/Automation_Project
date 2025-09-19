@@ -22,6 +22,10 @@
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+    {% block extra_css %}
+    <!-- Extra Head  -->
+    {% endblock %}
+
 
 </head>
 <body>
@@ -78,6 +82,10 @@
     {% block content %}
         <!-- All your html main content will go here -->
     {% endblock %}
+
+     {% block extra_scripts %}
+         <!-- Extra Script  -->
+     {% endblock %}
 
 
     {% if user.is_authenticated %}
