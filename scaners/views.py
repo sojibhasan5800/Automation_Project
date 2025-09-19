@@ -26,11 +26,11 @@ def generate_qr_code(request):
                 'qr_url': qr_url,
                 'file_name': file_name,
             }
-            return render(request, 'qr_result.html', context)
+            return render(request, 'scaners/qr_result.html', context)
     
     else:
         form = QRCodeForm()
         context = {
             'form': form,
         }
-        return render(request, 'generate_qr_code.html', context)
+        return render(request, 'scaners/generate_qr_code.html', context)
