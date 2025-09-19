@@ -15,7 +15,7 @@ def generate_qr_code(request):
             # Generate QR Code
             qr = qrcode.make(url)
             file_name = res_name.replace(" ", "_").lower() + '_menu.png'
-            file_path = os.path.join(settings.MEDIA_ROOT, file_name) #../media/rathan_rest_menu.png
+            file_path = os.path.join(settings.MEDIA_ROOT, file_name) #../media/sojibhasan_rest_menu.png
             qr.save(file_path)
 
             # Create Image URL
