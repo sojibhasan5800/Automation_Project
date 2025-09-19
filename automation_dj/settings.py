@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'image_compression',
     'resumechecker',
     'scaners',
+    'tictac'
 ]
 
 
