@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a href="" class="navbar-brand">Generate QR Code</a>
+        </div>
+    </nav>
+
+    <!-- QR Code Form -->
+     <div class="container mt-5" style="width: 600px; border: 1px solid #D3D3D3;padding: 30px; border-radius: 10px;">
+        <form action="{% url 'generate_qr_code' %}" method="POST">
+            {% csrf_token %}
+    
+            {{ form.as_p }}
+    
+            <button type="submit" class="btn btn-primary">Generate QR Code</button>
+         </form>
+     </div>
+
+{% endblock %}  
