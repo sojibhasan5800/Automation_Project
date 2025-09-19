@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'stockanalysis',
     'image_compression',
     'resumechecker',
+    'scaners',
 ]
 
 
