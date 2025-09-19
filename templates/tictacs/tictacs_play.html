@@ -40,3 +40,20 @@
  {% block extra_scripts %}
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 {% endblock %}
+
+
+ <script>
+
+        var room_code = '{{room_code}}'
+        var username = '{{username}}'
+        var player = username.charAt(0)
+
+        const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+
+        const socket = new WebSocket(
+            wsScheme + "://" + window.location.host + "/tictacs/ws/game/" + room_code + "/"
+        );
+
+        
+        
+</script>
