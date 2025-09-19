@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
+ {% block extra_title %}
+    <title>Play | {{room_code}}</title>
+{% endblock %}
+
+{% block extra_css %}
+    <link href="{% static 'css/tictac.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 
  <div class="full-page" id="full-page">
@@ -27,6 +35,8 @@
         </div>
     </div>
 
-
-
 {% endblock %}  
+
+ {% block extra_scripts %}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock %}
