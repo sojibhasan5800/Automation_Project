@@ -30,5 +30,6 @@ urlpatterns = [
     path('accounts/', include(('accounts.urls', 'accounts'), namespace='accounts')),
     path('image-compression/', include('image_compression.urls')),
     path('webscraping/', include('stockanalysis.urls')),
+    path('resumecheckers/', include('resumechecker.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
