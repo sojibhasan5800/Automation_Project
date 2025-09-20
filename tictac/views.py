@@ -23,6 +23,7 @@ def tictac_home(request):
              
             game.game_opponent = username
             game.save()
+            return redirect('/tictacs/play/' + room_code + '?username=' + username)  
         else:
             game = Game(game_creator = username , room_code = room_code)
             game.save()        

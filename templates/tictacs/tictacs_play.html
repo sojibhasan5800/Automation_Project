@@ -18,15 +18,9 @@
         </div>
         <div class="boardcontainer">
             <div class="board">
-                <div data-cell-index="0" class="space"></div>
-                <div data-cell-index="1" class="space"></div>
-                <div data-cell-index="2" class="space"></div>
-                <div data-cell-index="3" class="space"></div>
-                <div data-cell-index="4" class="space"></div>
-                <div data-cell-index="5" class="space"></div>
-                <div data-cell-index="6" class="space"></div>
-                <div data-cell-index="7" class="space"></div>
-                <div data-cell-index="8" class="space"></div>
+                {% for i in "012345678" %}
+                <div data-cell-index="{{ forloop.counter0 }}" class="space"></div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -34,54 +28,40 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<!-- SweetAlert CDN -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    // ================== Variables ==================
     var room_code = '{{ room_code }}';
     var username = '{{ username }}';
-    var player = username.charAt(0);
+    var player = username.charAt(0); // X or O
+    var gameState = ["","","","","","","","",""];
+    var gameOver = false; // Game is over → clicks are disabled
+    var myTurn = true; // ✅ The player who opens the page plays first
 
     console.log("Username:", username);
 
-    let gameState = ["","","","","","","","",""];
+    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const socket = new WebSocket(
+        wsScheme + "://" + window.location.host + "/tictacs/ws/game/" + room_code + "/"
+    );
+
     let elementArray = document.querySelectorAll('.space');
 
-    // Click event for each cell
     elementArray.forEach(function(elem){
         elem.addEventListener("click", function(event){
-            let index = event.target.getAttribute('data-cell-index');
+            let index = event.currentTarget.getAttribute('data-cell-index');
             setText(index, player);
         });
     });
 
-    // WebSocket connection
-    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
-    const socket = new WebSocket(wsScheme + "://" + window.location.host + "/tictacs/ws/game/" + room_code + "/");
-
-    socket.onopen = function() {
-        console.log('WebSocket connected');
-    };
-
-    socket.onmessage = function(e) {
-        var data = JSON.parse(e.data);
-        console.log("WS message:", data);
-
-        if(data.payload.type === 'end' && data.payload.player !== player){
-            swal("Sorry!", "You lost", "error");
-        } else if(data.payload.type === 'over'){
-            swal("Game over!", "No one won", "warning");
-        } else if(data.payload.type === 'running' && data.payload.player !== player){
-            setAnotherUserText(data.payload.index, data.payload.player);
-        }
-    };
-
-    socket.onclose = function() {
-        console.log('WebSocket closed');
-    };
-
+    // ================== Functions ==================
     function setText(index, value){
+        if(gameOver) return; // Clicks disabled if the game is over
+        if(!myTurn){
+            alert("Wait! It's not your turn."); // ✅ Turn check
+            return;
+        }
+
         if(gameState[parseInt(index)] === ""){
             gameState[parseInt(index)] = value;
             elementArray[parseInt(index)].innerHTML = value;
@@ -91,33 +71,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 index: index,
                 type: 'running'
             };
+
             socket.send(JSON.stringify({data}));
 
+            myTurn = false; // ✅ Switch turn after making a move
             checkWon(value, player);
         } else {
-            alert("You cannot fill this space");
+            alert("You cannot fill this space"); // Already filled
         }
     }
 
     function setAnotherUserText(index, value){
         gameState[parseInt(index)] = value;
         elementArray[parseInt(index)].innerHTML = value;
+        myTurn = true; // ✅ After the other player's move, it's my turn
     }
 
     function checkGameEnd(){
         let count = gameState.filter(cell => cell !== "").length;
-        if(count >= 9){
+        if(count >= 9 && !gameOver){
+            gameOver = true;
             var data = {'type': 'over'};
             socket.send(JSON.stringify({data}));
-            swal("Good over!", "Game ended, no one won", "warning");
+            swal("Game over!", "No one won", "warning");
         }
     }
 
     function checkWon(value, player){
-        let winPatterns = [
-            [0,1,2],[3,4,5],[6,7,8], // rows
-            [0,3,6],[1,4,7],[2,5,8], // columns
-            [0,4,8],[2,4,6]          // diagonals
+        const winPatterns = [
+            [0,1,2],[3,4,5],[6,7,8],
+            [0,3,6],[1,4,7],[2,5,8],
+            [0,4,8],[2,4,6]
         ];
 
         let won = winPatterns.some(pattern => 
@@ -125,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         );
 
         if(won){
+            gameOver = true;
             var data = {'type': 'end', 'player': player};
             socket.send(JSON.stringify({data}));
             swal("Good job!", "You won", "success");
@@ -132,6 +117,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
         checkGameEnd();
     }
-});
+
+    // ================== WebSocket ==================
+    socket.onopen = function(e){
+        console.log("Socket connected!");
+    };
+
+    socket.onmessage = function(e){
+        var data = JSON.parse(e.data);
+        console.log("WS message:", data);
+
+        if(data.payload.type === 'end'){
+            gameOver = true;
+            if(data.payload.player !== player){
+                swal("Sorry!", "You lost", "error");
+            }
+        } else if(data.payload.type === 'over'){
+            gameOver = true;
+            swal("Game over!", "No one won", "warning");
+        } else if(data.payload.type === 'running' && data.payload.player !== player){
+            // Other player's move received → set text + now it's my turn
+            setAnotherUserText(data.payload.index, data.payload.player);
+        }
+    };
+
+    socket.onclose = function(e){
+        console.log("Socket closed");
+    };
 </script>
 {% endblock %}
