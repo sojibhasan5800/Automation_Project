@@ -63,7 +63,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         }))
 
 
-class GameRoom(WebsocketConsumer):
+class GameConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_code']
         self.room_group_name = 'room_%s' %  self.room_name
