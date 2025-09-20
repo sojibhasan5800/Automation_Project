@@ -15,18 +15,18 @@ def tictac_home(request):
             
             if game is None:
                 messages.success(request , "Room code not found")
-                return redirect('/')
+                return redirect('tictac_home')
             
             if game.is_over:
                 messages.success(request , "Game is over")
-                return redirect('/')
+                return redirect('tictac_home')
              
             game.game_opponent = username
             game.save()
         else:
             game = Game(game_creator = username , room_code = room_code)
             game.save()        
-            return redirect('/play/' + room_code + '?username='+username)     
+            return redirect('/tictacs/play/' + room_code + '?username='+username)     
             
     return render(request, 'tictacs/tictacs_home.html')
 
