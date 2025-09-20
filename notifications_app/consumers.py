@@ -63,42 +63,38 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         }))
 
 
-class GameConsumer(WebsocketConsumer):
-    def connect(self):
+
+
+class GameConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_code']
-        self.room_group_name = 'room_%s' %  self.room_name
-        print(self.room_group_name) 
+        self.room_group_name = f'room_{self.room_name}'
+        print(self.room_group_name)
 
-        async_to_sync(self.channel_layer.group_add)(
+        await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
-        
-        self.accept()
+        await self.accept()
 
-        
-    def disconnect(self):
-        async_to_sync(self.channel_layer.group_discard)(
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
-        
-    def receive(self , text_data):
-        print(text_data)
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,{
-                'type' : 'run_game',
-                'payload' : text_data
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'run_game',
+                'payload': data
             }
         )
-        
-    
-    def run_game(self , event):
-        data = event['payload']
-        data = json.loads(data)
 
-        self.send(text_data= json.dumps({
-            'payload' : data['data']
-        }))        
-        
-         
+    async def run_game(self, event):
+        payload = event['payload']
+        await self.send(text_data=json.dumps({
+            'payload': payload['data']
+        }))

@@ -1,178 +1,137 @@
 {% extends 'base.html' %}
 {% load static %}
 
- {% block extra_title %}
-    <title>Play | {{room_code}}</title>
+{% block extra_title %}
+<title>Play | {{ room_code }}</title>
 {% endblock %}
 
 {% block extra_css %}
-    <link href="{% static 'css/tictac.css' %}" rel="stylesheet">
+<link href="{% static 'css/tictac.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-
- <div class="full-page  bg-dark " id="full-page">
-
-        <div class="game flex-column">
-            <div class="scoreboard">
-                <div class="player1">Player 1: 0</div>
-                <div class="player2">Player 2: 0</div>
-            </div>
-            <div class="boardcontainer">
-                <div class="board">
-                    <div data-cell-index="0" class="space"></div>
-                    <div data-cell-index="1" class="space"></div>
-                    <div data-cell-index="2" class="space"></div>
-                    <div data-cell-index="3" class="space"></div>
-                    <div data-cell-index="4" class="space"></div>
-                    <div data-cell-index="5" class="space"></div>
-                    <div data-cell-index="6" class="space"></div>
-                    <div data-cell-index="7" class="space"></div>
-                    <div data-cell-index="8" class="space"></div>
-
-                </div>
+<div class="full-page bg-dark" id="full-page">
+    <div class="game flex-column">
+        <div class="scoreboard">
+            <div class="player1">Player 1: 0</div>
+            <div class="player2">Player 2: 0</div>
+        </div>
+        <div class="boardcontainer">
+            <div class="board">
+                <div data-cell-index="0" class="space"></div>
+                <div data-cell-index="1" class="space"></div>
+                <div data-cell-index="2" class="space"></div>
+                <div data-cell-index="3" class="space"></div>
+                <div data-cell-index="4" class="space"></div>
+                <div data-cell-index="5" class="space"></div>
+                <div data-cell-index="6" class="space"></div>
+                <div data-cell-index="7" class="space"></div>
+                <div data-cell-index="8" class="space"></div>
             </div>
         </div>
     </div>
-
-{% endblock %}  
-
- {% block extra_scripts %}
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</div>
 {% endblock %}
 
+{% block extra_scripts %}
+<!-- SweetAlert CDN -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
- <script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var room_code = '{{ room_code }}';
+    var username = '{{ username }}';
+    var player = username.charAt(0);
 
-        var room_code = '{{room_code}}'
-        var username = '{{username}}'
-        var player = username.charAt(0)
+    console.log("Username:", username);
 
-        const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+    let gameState = ["","","","","","","","",""];
+    let elementArray = document.querySelectorAll('.space');
 
-        const socket = new WebSocket(
-            wsScheme + "://" + window.location.host + "/tictacs/ws/game/" + room_code + "/"
+    // Click event for each cell
+    elementArray.forEach(function(elem){
+        elem.addEventListener("click", function(event){
+            let index = event.target.getAttribute('data-cell-index');
+            setText(index, player);
+        });
+    });
+
+    // WebSocket connection
+    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const socket = new WebSocket(wsScheme + "://" + window.location.host + "/tictacs/ws/game/" + room_code + "/");
+
+    socket.onopen = function() {
+        console.log('WebSocket connected');
+    };
+
+    socket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        console.log("WS message:", data);
+
+        if(data.payload.type === 'end' && data.payload.player !== player){
+            swal("Sorry!", "You lost", "error");
+        } else if(data.payload.type === 'over'){
+            swal("Game over!", "No one won", "warning");
+        } else if(data.payload.type === 'running' && data.payload.player !== player){
+            setAnotherUserText(data.payload.index, data.payload.player);
+        }
+    };
+
+    socket.onclose = function() {
+        console.log('WebSocket closed');
+    };
+
+    function setText(index, value){
+        if(gameState[parseInt(index)] === ""){
+            gameState[parseInt(index)] = value;
+            elementArray[parseInt(index)].innerHTML = value;
+
+            var data = {
+                player: value,
+                index: index,
+                type: 'running'
+            };
+            socket.send(JSON.stringify({data}));
+
+            checkWon(value, player);
+        } else {
+            alert("You cannot fill this space");
+        }
+    }
+
+    function setAnotherUserText(index, value){
+        gameState[parseInt(index)] = value;
+        elementArray[parseInt(index)].innerHTML = value;
+    }
+
+    function checkGameEnd(){
+        let count = gameState.filter(cell => cell !== "").length;
+        if(count >= 9){
+            var data = {'type': 'over'};
+            socket.send(JSON.stringify({data}));
+            swal("Good over!", "Game ended, no one won", "warning");
+        }
+    }
+
+    function checkWon(value, player){
+        let winPatterns = [
+            [0,1,2],[3,4,5],[6,7,8], // rows
+            [0,3,6],[1,4,7],[2,5,8], // columns
+            [0,4,8],[2,4,6]          // diagonals
+        ];
+
+        let won = winPatterns.some(pattern => 
+            pattern.every(index => gameState[index] === value)
         );
 
-        
-        
-let gameState = ["","","","","","","","",""]
-
-        let elementArray = document.querySelectorAll('.space')
-
-        elementArray.forEach(function(elem){
-            elem.addEventListener("click" , function (event){
-                setText(event.path[0].getAttribute('data-cell-index') , player)
-            })
-        })
-
-
-        function checkGameEnd(){
-            var count = 0;
-            gameState.map((game)=>{
-                if(game != ""){
-                    count++;
-                }
-            })
-
-            if(count >= 9){
-                var data = {'type' : 'over'}
-                socket.send(JSON.stringify({data}))
-                swal("Good over!" , "Game end no one won" , "warning")   
-            }
+        if(won){
+            var data = {'type': 'end', 'player': player};
+            socket.send(JSON.stringify({data}));
+            swal("Good job!", "You won", "success");
         }
 
-        function checkWon(value , player){
-            var won = false;
-
-            if(gameState[0] === value && gameState[1] == value && gameState[2] == value){
-                won = true;
-            }else if(gameState[3] === value && gameState[4] == value && gameState[5] == value){
-                won = true
-            }else if(gameState[6] === value && gameState[7] == value && gameState[8] == value){
-                won = true
-            }
-            else if(gameState[0] === value && gameState[3] == value && gameState[6] == value){
-                won = true
-            }
-            else if(gameState[1] === value && gameState[4] == value && gameState[7] == value){
-                won = true
-            }else if(gameState[2] === value && gameState[5] == value && gameState[8] == value){
-                won = true
-            }
-            else if(gameState[0] === value && gameState[4] == value && gameState[8] == value){
-                won = true
-            }
-            else if(gameState[2] === value && gameState[4] == value && gameState[6] == value){
-                won = true
-            }
-
-            if(won){
-                var data = {'type' : 'end' , 'player' : player}
-                socket.send(JSON.stringify({data}))
-                swal("Good job!" , "You won" , "success")
-            }
-
-            checkGameEnd();
-
-        }
-
-
-
-        function setText(index , value){
-            var data = {
-                'player' : player,
-                'index' : index,
-                'type' : 'running'
-            }
-
-            
-
-            if(gameState[parseInt(index)] == ""){
-            gameState[parseInt(index)] = value
-            elementArray[parseInt(index)].innerHTML = value
-            
-            socket.send(JSON.stringify({
-                data
-            }))
-            checkWon(value , player )
-            }else{
-                alert("You cannot fill this space")
-            }
-        }
-
-
-        function setAnotherUserText(index , value){
-            gameState[parseInt(index)] = value
-            elementArray[parseInt(index)].innerHTML = value
-        }
-
-
-
-        socket.onopen = function (e){
-            console.log('Socket connected')
-        }
-
-        socket.onmessage = function (e){
-            var data = JSON.parse(e.data)
-            console.log(data)
-            if(data.payload.type == 'end' && data.payload.player !== player){
-                swal("Sorry!" , "You lost" , "error")
-            }else if(data.payload.type == 'over'){
-                swal("Game over!" , "Game end no one won" , "warning")
-                return;
-            }else if(data.payload.type == 'running' &&  data.payload.player !== player){
-                setAnotherUserText(data.payload.index , data.payload.player)
-            }
-
-        
-
-        }
-
-        socket.onclose = function (e){
-            console.log('Socket closed')
-        }
-
-
-
-    </script>
+        checkGameEnd();
+    }
+});
+</script>
+{% endblock %}
