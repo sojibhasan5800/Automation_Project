@@ -1,6 +1,6 @@
 from automation_dj.celery import app
 from django.core.management import call_command
-from .utlis import send_email_notification,generate_csv_file
+from .utlis import send_email_notification,generate_csv_file,async_read_csv,async_write_csv
 from notifications_app.models import BroadcastNotification
 
 import time
@@ -42,3 +42,16 @@ def export_data_task(model_name,user_email,user_id):
         message=f"Your {model_name} data Export has been completed successfully."
         )
     return 'Export Data task executed successfully.'
+
+
+# CPU-bound CSV processing
+def process_csv_cpu(file_path):
+    import csv
+    data = []
+    with open(file_path, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # pretend CPU-heavy task
+            row = {k:v.upper() if isinstance(v,str) else v for k,v in row.items()}
+            data.append(row)
+    return data
