@@ -13,6 +13,17 @@ def import_data_task(file_path, model_name, user_email, user_id):
     from .utlis import send_email_notification, process_csv_cpu
     from notifications_app.models import BroadcastNotification
 
+    # ==================== Step 0: Find model dynamically ====================
+    model = None
+    for app_config in apps.get_app_configs():
+        try:
+            model = apps.get_model(app_config.label, model_name)
+            break
+        except LookupError:
+            continue
+    if not model:
+        raise ValueError(f"Model {model_name} not found in any installed app")
+
     # ==================== Step 1: New event loop ====================
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -23,7 +34,6 @@ def import_data_task(file_path, model_name, user_email, user_id):
         processed_data = future.result()   # process_csv_cpu returns a list of dicts
 
     # ==================== Step 3: Save data to DB ====================
-    model = apps.get_model('dataentry', model_name)
     for row in processed_data:
         model.objects.create(**row)
 
@@ -41,6 +51,7 @@ def import_data_task(file_path, model_name, user_email, user_id):
     )
 
     return 'Data imported successfully.'
+
 
 
 
