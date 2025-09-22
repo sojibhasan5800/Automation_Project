@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'rest_framework',
+    # 'ratelimit',
 
     # Project apps
     'dataentry',
@@ -262,6 +263,24 @@ CHANNEL_LAYERS = {
         'CONFIG': {"hosts": [('127.0.0.1', 6379)],},
     },
 }
+
+# ===================== CACHEING =====================
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",   # or your production REDIS_URL
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# Optional: Django-ratelimit will use cache
+RATELIMIT_USE_CACHE = 'default'
+
+
+
 
 # ===================== DJANGO-ALLAUTH =====================
 
