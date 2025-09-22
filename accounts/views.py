@@ -138,7 +138,7 @@ def resend_otp(request, username):
     return render(request, "accounts/resend_otp.html", {"username": username})
 
 
-@ratelimit(key=user_or_ip, rate='5/m', method='POST', block=True)
+@ratelimit(key=user_or_ip, rate='3/m', method='POST', block=True)
 def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
