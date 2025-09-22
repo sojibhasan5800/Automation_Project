@@ -56,33 +56,32 @@ def import_data_task(file_path, model_name, user_email, user_id):
 
 
 @app.task
-def export_data_task(model_name,user_email,user_id):
-    try:
-        call_command('exportdata', model_name)
-    except Exception as e:
-        raise e
-    
+def export_data_task(model_name, user_email, user_id):
+    import asyncio
+    from concurrent.futures import ThreadPoolExecutor
+    from .utlis import async_write_csv, generate_csv_file, send_email_notification
+    from notifications_app.models import BroadcastNotification
+    from django.apps import apps
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    model = apps.get_model('dataentry', model_name)
+    data = model.objects.all()
+    data_list = [{field.name: getattr(row, field.name) for field in model._meta.fields} for row in data]
+
     file_path = generate_csv_file(model_name)
-    # Send email with the attachment
-    mail_subject = 'Export Data Successful'
-    message = 'Export data successful. Please find the attachment'
-    to_email = user_email
-    send_email_notification(mail_subject, message, [to_email], attachment=file_path)
+    fieldnames = [field.name for field in model._meta.fields]
+
+    # Async CSV write
+    loop.run_until_complete(async_write_csv(file_path, fieldnames, data_list))
+
+    # Email send using ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        pool.submit(send_email_notification, 'Export Done', f'{model_name} export completed', [user_email], file_path)
+
+    # Broadcast Notification
     BroadcastNotification.objects.create(
         user_id=user_id,
-        message=f"Your {model_name} data Export has been completed successfully."
-        )
-    return 'Export Data task executed successfully.'
-
-
-# CPU-bound CSV processing
-def process_csv_cpu(file_path):
-    import csv
-    data = []
-    with open(file_path, 'r') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            # pretend CPU-heavy task
-            row = {k:v.upper() if isinstance(v,str) else v for k,v in row.items()}
-            data.append(row)
-    return data
+        message=f"{model_name} data export completed successfully"
+    )
