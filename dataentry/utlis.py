@@ -12,6 +12,8 @@ import csv
 from django.db import DataError
 from django.http import FileResponse, Http404
 import os
+import asyncio
+import aiofiles
 
 
 
@@ -144,4 +146,19 @@ def generate_tracking_email_user(user_email):
     all_list = List.objects.all()
     for list_obj in all_list:
         Subscriber.objects.create(email_list=list_obj,email_address=user_email)
+
+
+# Async CSV read
+async def async_read_csv(file_path):
+    async with aiofiles.open(file_path, mode='r') as f:
+        content = await f.read()
+    reader = csv.DictReader(content.splitlines())
+    return [row for row in reader]
+
+# Async CSV write
+async def async_write_csv(file_path, fieldnames, data):
+    async with aiofiles.open(file_path, mode='w', newline='') as f:
+        await f.write(','.join(fieldnames) + '\n')
+        for row in data:
+            await f.write(','.join(str(row[field]) for field in fieldnames) + '\n')
 
