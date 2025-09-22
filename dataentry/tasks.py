@@ -10,7 +10,7 @@ def import_data_task(file_path, model_name, user_email, user_id):
     import asyncio
     from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
     from django.apps import apps
-    from .utlis import send_email_notification, process_csv_cpu
+    from .utlis import send_email_notification,p
     from notifications_app.models import BroadcastNotification
 
     # ==================== Step 0: Find model dynamically ====================

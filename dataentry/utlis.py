@@ -162,3 +162,14 @@ async def async_write_csv(file_path, fieldnames, data):
         for row in data:
             await f.write(','.join(str(row[field]) for field in fieldnames) + '\n')
 
+# CPU-bound CSV processing
+def process_csv_cpu(file_path):
+    import csv
+    data = []
+    with open(file_path, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # pretend CPU-heavy task
+            row = {k:v.upper() if isinstance(v,str) else v for k,v in row.items()}
+            data.append(row)
+    return data
