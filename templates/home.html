@@ -10,7 +10,7 @@
             <a href="{% url 'import_data' %}" class="text-decoration-none text-dark">
                 <div class="card alert-primary shadow">
                     <div class="card-header">
-                    <h4>Import Data</h4>
+                    <h4><i class="fa fa-database me-2"></i>Import Data</h4>
                     </div>
                     <div class="card-body">
                     <p class="card-text">Imports data from CSV file to any table.</p>
@@ -23,7 +23,7 @@
             <a href="{% url 'export_data' %}" class="text-decoration-none text-dark">
                 <div class="card alert-success shadow">
                     <div class="card-header">
-                    <h4>Export Data</h4>
+                    <h4><i class="fa fa-file-export me-2"></i>Export Data</h4>
                     </div>
                     <div class="card-body">
                     <p class="card-text">Exports data from a specific table to a CSV file.</p>
@@ -37,7 +37,7 @@
             <a href="{% url 'send_email' %}" class="text-decoration-none text-dark">
                 <div class="card alert-danger shadow">
                     <div class="card-header">
-                    <h4>Bulk Emails</h4>
+                    <h4><i class="fa fa-envelope me-2"></i>Bulk Emails</h4>
                     </div>
                     <div class="card-body">
                     <p class="card-text">Sends bulk emails to users</p>
@@ -53,7 +53,7 @@
             <a href="{% url 'track_dashboard' %}" class="text-decoration-none text-dark">
                 <div class="card alert-warning shadow">
                     <div class="card-header">
-                    <h4>Email Tracking</h4>
+                    <h4><i class="fa fa-chart-line me-2"></i>Email Tracking</h4>
                     </div>
                     <div class="card-body">
                     <p class="card-text">Tracks emails and shows open and click rate</p>
@@ -66,7 +66,7 @@
             <a href="{% url 'compress' %}" class="text-decoration-none text-dark">
                 <div class="card alert-danger shadow">
                     <div class="card-header">
-                    <h4>Compress Images</h4>
+                    <h4><i class="fa fa-image me-2"></i>Compress Images</h4>
                     </div>
                     <div class="card-body">
                     <p class="card-text">Compresses Image files and reduces the size</p>
@@ -80,7 +80,7 @@
             <a href="{% url 'stocks' %}" class="text-decoration-none text-dark">
                 <div class="card alert-warning shadow">
                     <div class="card-header">
-                    <h4>Stock Market Analysis</h4>
+                    <h4><i class="fa fa-chart-bar me-2"></i>Stock Market Analysis</h4>
                     </div>
                     <div class="card-body">
                     <p class="card-text">Stock Market Analysis - Web Scraping</p>
@@ -97,7 +97,7 @@
             <a href="{% url 'resume_home' %}" class="text-decoration-none text-dark">
                 <div class="card text-white bg-info shadow-lg">
                     <div class="card-header">
-                        <h4>Resume Checker</h4>
+                        <h4><i class="fa fa-file-alt me-2"></i>Resume Checker</h4>
                     </div>
                     <div class="card-body">
                         <p class="card-text">ATS-friendly Resume Analysis and Optimization</p>
@@ -107,12 +107,11 @@
         </div>
 
         <!-- QR Scanner -->
-
         <div class="col-md-4">
             <a href="{% url 'generate_qr_code' %}" class="text-decoration-none text-dark">
                 <div class="card text-white bg-success shadow-lg">
                     <div class="card-header">
-                        <h4>QR Scanner</h4>
+                        <h4><i class="fa fa-qrcode me-2"></i>QR Scanner</h4>
                     </div>
                     <div class="card-body">
                        <p class="card-text">Scan QR codes quickly and efficiently</p>
@@ -126,7 +125,7 @@
             <a href="{% url 'tictac_home' %}" class="text-decoration-none text-dark">
                 <div class="card text-white bg-danger shadow-lg">
                     <div class="card-header">
-                        <h4>TikTak Game</h4>
+                        <h4><i class="fa fa-gamepad me-2"></i>TikTak Game</h4>
                     </div>
                     <div class="card-body">
                         <p class="card-text">Fun TikTak (Tic Tac Toe) Game</p>
@@ -137,7 +136,6 @@
     </div>
 
     {% else %}
-
     <div class="home-info">
         <h2 class="text-center">Automate the Boring Stuff with Django</h2>
         <p class="lead text-center text-muted">
@@ -154,8 +152,6 @@
         </div>
     </div>
     <br>
-
     {% endif %}
-
 </div>
 {% endblock %}
